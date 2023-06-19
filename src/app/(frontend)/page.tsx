@@ -1,14 +1,29 @@
-'use client';
+import dynamic from 'next/dynamic';
 
-import styles from './page.module.css';
-import {Typography} from '@mui/material';
+const DynamicHomePage = dynamic(() => import('../../../modules/HomePage'), {
+  loading: () => <p>Loading...</p>,
+});
 
-export default function Home() {
+async function getData() {
+  try {
+    const res = await fetch(
+      'https://jsonplaceholder.typicode.com/posts?start=0&_limit=10',
+    );
+
+    return res.json();
+  } catch (e) {
+    console.log('e', e);
+    return [];
+    // throw e;
+  }
+}
+
+export default async function Home() {
+  const data = await getData();
+  // console.log('data->', data);
   return (
-    <main className={styles.main}>
-      <div className={styles.center}>
-        <Typography variant={'h1'}>shaon</Typography>
-      </div>
-    </main>
+    <>
+      <DynamicHomePage data={data} />
+    </>
   );
 }
